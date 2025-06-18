@@ -131,8 +131,12 @@ const DataTable = ({ records, loading, error, onImageHover, onLoadMore }) => {
                         alt="Login"
                         className="w-20 h-20 object-cover rounded-xl border-2 border-purple-500/50 shadow-lg group-hover:border-purple-400 transition-all duration-300"
                         onError={(e) => {
-                          e.target.style.display = 'none';
-                          e.target.nextSibling.style.display = 'flex';
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          const nextElement = target.nextSibling as HTMLElement;
+                          if (nextElement) {
+                            nextElement.style.display = 'flex';
+                          }
                         }}
                       />
                       <div className="hidden w-20 h-20 bg-gradient-to-br from-gray-600 to-gray-800 rounded-xl border-2 border-purple-500/50 items-center justify-center">
@@ -160,8 +164,12 @@ const DataTable = ({ records, loading, error, onImageHover, onLoadMore }) => {
                         alt="Enrolled"
                         className="w-20 h-20 object-cover rounded-xl border-2 border-cyan-500/50 shadow-lg group-hover:border-cyan-400 transition-all duration-300"
                         onError={(e) => {
-                          e.target.style.display = 'none';
-                          e.target.nextSibling.style.display = 'flex';
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          const nextElement = target.nextSibling as HTMLElement;
+                          if (nextElement) {
+                            nextElement.style.display = 'flex';
+                          }
                         }}
                       />
                       <div className="hidden w-20 h-20 bg-gradient-to-br from-gray-600 to-gray-800 rounded-xl border-2 border-cyan-500/50 items-center justify-center">

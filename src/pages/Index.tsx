@@ -68,7 +68,7 @@ const Index = () => {
           status: filters.status || 'MISMATCHED',
           state: filters.state,
           date: filters.date,
-          confidanceScore: parseFloat(filters.confidenceScore),
+          confidanceScore: parseFloat(filters.confidenceScore.toString()),
           page: reset ? 1 : page,
           limit: 20
         })
