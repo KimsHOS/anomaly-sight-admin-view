@@ -17,7 +17,7 @@ const DataTable = ({ records, loading, error, onImageHover, onLoadMore }) => {
   const getEnrollImageUrl = (state, employee_id) => {
     const baseUrl = 'http://eams.achalasolutions.com:8091/attendance/document/fetchFileFromCloud';
     const filePath = `EMPLOYEEIMAGES/${state}/${employee_id}.png`;
-    return `${baseUrl}?fileName=${encodeURIComponent(filePath)}`;
+    return filePath;
   };
 
   const getStatusColor = (status) => {
