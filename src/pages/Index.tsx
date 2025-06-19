@@ -63,7 +63,8 @@ const Index = () => {
       const response = await fetch('http://emrisvsschedularint.emri.in/face_mismatch/records', {
         method: 'POST',
         headers: { 
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
         },
         body: JSON.stringify({
           status: filters.status || 'MISMATCHED',
