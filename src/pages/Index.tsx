@@ -61,7 +61,7 @@ const Index = () => {
     setError('');
 
     try {
-      const response = await fetch('http://172.16.18.149:3003/api/records', {
+      const response = await fetch('http://emrisvsschedularint.emri.in/face_mismatch/records', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
