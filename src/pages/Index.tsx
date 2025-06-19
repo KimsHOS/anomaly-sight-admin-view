@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Search, LogOut, Filter, Eye, Calendar, MapPin, BarChart3, User, Shield } from 'lucide-react';
 import LoginScreen from '../components/LoginScreen';
@@ -63,7 +62,10 @@ const Index = () => {
     try {
       const response = await fetch('http://emrisvsschedularint.emri.in/face_mismatch/records', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        },
         body: JSON.stringify({
           status: filters.status || 'MISMATCHED',
           state: filters.state,
@@ -74,6 +76,10 @@ const Index = () => {
         })
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
       if (data.success) {
         setRecords(prev => reset ? data.records : [...prev, ...data.records]);
@@ -82,8 +88,12 @@ const Index = () => {
         setError(data.message || 'Failed to fetch records');
       }
     } catch (err) {
-      setError('Error connecting to the server. Please check the backend service.');
       console.error('Fetch error:', err);
+      if (err.name === 'TypeError' && err.message === 'Failed to fetch') {
+        setError('CORS Error: Unable to connect to the API. The server needs to allow cross-origin requests from this domain.');
+      } else {
+        setError('Error connecting to the server. Please check the backend service.');
+      }
     } finally {
       setLoading(false);
     }
