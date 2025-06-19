@@ -60,11 +60,10 @@ const Index = () => {
     setError('');
 
     try {
-      const response = await fetch('http://emrisvsschedularint.emri.in/face_mismatch/records', {
+      const response = await fetch('/api/face_mismatch/records', {
         method: 'POST',
         headers: { 
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           status: filters.status || 'MISMATCHED',
@@ -90,7 +89,7 @@ const Index = () => {
     } catch (err) {
       console.error('Fetch error:', err);
       if (err.name === 'TypeError' && err.message === 'Failed to fetch') {
-        setError('CORS Error: Unable to connect to the API. The server needs to allow cross-origin requests from this domain.');
+        setError('Unable to connect to the API. Please check if the server is running.');
       } else {
         setError('Error connecting to the server. Please check the backend service.');
       }
