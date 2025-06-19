@@ -1,4 +1,3 @@
-
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
@@ -13,7 +12,7 @@ export default defineConfig(({ mode }) => ({
       '/api/face_mismatch': {
         target: 'http://emrisvsschedularint.emri.in',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
+        rewrite: (path) => path.replace(/^\/api\/face_mismatch/, '/face_mismatch/records'),
         secure: false,
         configure: (proxy, _options) => {
           proxy.on('error', (err, _req, _res) => {
