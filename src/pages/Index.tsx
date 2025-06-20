@@ -45,13 +45,17 @@ const Index = () => {
   );
   const [activeTab, setActiveTab] = useState('face-recognition');
   
-  // Face Recognition States
+  // Face Recognition States - Enhanced with employee ID and new date options
   const [records, setRecords] = useState([]);
   const [filters, setFilters] = useState({
     status: 'MISMATCHED',
     state: '',
     date: '',
-    confidenceScore: 0.4
+    confidenceScore: 0.4,
+    employeeId: '',
+    dateRangeType: 'single_date' as 'today' | 'current_week' | 'last_week' | 'custom' | 'single_date',
+    fromDate: '',
+    toDate: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -91,7 +95,11 @@ const Index = () => {
       status: 'MISMATCHED',
       state: '',
       date: '',
-      confidenceScore: 0.4
+      confidenceScore: 0.4,
+      employeeId: '',
+      dateRangeType: 'single_date',
+      fromDate: '',
+      toDate: ''
     });
     setAttendanceFilters({
       employeeId: '',
@@ -106,10 +114,19 @@ const Index = () => {
     setHasSearched(false);
   };
 
-  // Face Recognition Data Fetching
+  // Enhanced Face Recognition Data Fetching with new filter options
   const fetchFaceRecognitionData = async (reset = false) => {
-    if (!filters.state || !filters.date) {
-      setError('Please select a state and date');
+    // Validation based on date range type
+    if (filters.dateRangeType === 'single_date' && !filters.date) {
+      setError('Please select a date');
+      return;
+    }
+    if (filters.dateRangeType === 'custom' && (!filters.fromDate || !filters.toDate)) {
+      setError('Please select both from and to dates for custom range');
+      return;
+    }
+    if (!filters.state) {
+      setError('Please select a state');
       return;
     }
 
@@ -122,20 +139,40 @@ const Index = () => {
     setError('');
 
     try {
+      // Prepare request body based on date range type
+      let requestBody: any = {
+        status: filters.status || 'MISMATCHED',
+        state: filters.state,
+        confidanceScore: parseFloat(filters.confidenceScore.toString()),
+        page: reset ? 1 : page,
+        limit: 20
+      };
+
+      // Add employee ID if provided
+      if (filters.employeeId) {
+        requestBody.employeeId = filters.employeeId;
+      }
+
+      // Handle different date range types
+      if (filters.dateRangeType === 'single_date') {
+        requestBody.date = filters.date;
+      } else if (filters.dateRangeType === 'custom') {
+        requestBody.fromDate = filters.fromDate;
+        requestBody.toDate = filters.toDate;
+      } else {
+        // For today, current_week, last_week - let the backend handle
+        requestBody.dateRangeType = filters.dateRangeType;
+      }
+
+      console.log('Face Recognition Request:', requestBody);
+
       const response = await fetch('http://emrisvsschedularint.emri.in/face_mismatch/records', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
         },
-        body: JSON.stringify({
-          status: filters.status || 'MISMATCHED',
-          state: filters.state,
-          date: filters.date,
-          confidanceScore: parseFloat(filters.confidenceScore.toString()),
-          page: reset ? 1 : page,
-          limit: 20
-        })
+        body: JSON.stringify(requestBody)
       });
 
       if (!response.ok) {
@@ -174,7 +211,7 @@ const Index = () => {
       limit: attendanceFilters.limit
     };
 
-    console.log('Sending request:', requestBody);
+    console.log('Attendance Request:', requestBody);
 
     const response = await fetch('http://0.0.0.0:3003/api/records', {
       method: 'POST',
@@ -189,7 +226,7 @@ const Index = () => {
     }
 
     const data = await response.json();
-    console.log('Received response:', data);
+    console.log('Attendance Response:', data);
     return data;
   };
 
@@ -216,8 +253,14 @@ const Index = () => {
   };
 
   useEffect(() => {
-    if (isAuthenticated && filters.state && filters.date && activeTab === 'face-recognition') {
-      fetchFaceRecognitionData(true);
+    if (isAuthenticated && filters.state && activeTab === 'face-recognition') {
+      if (filters.dateRangeType === 'single_date' && filters.date) {
+        fetchFaceRecognitionData(true);
+      } else if (filters.dateRangeType === 'custom' && filters.fromDate && filters.toDate) {
+        fetchFaceRecognitionData(true);
+      } else if (['today', 'current_week', 'last_week'].includes(filters.dateRangeType)) {
+        fetchFaceRecognitionData(true);
+      }
     }
   }, [filters]);
 
