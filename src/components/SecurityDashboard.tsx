@@ -1,7 +1,6 @@
 
 import React from 'react';
-import { LogOut, BarChart3, Shield } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { LogOut, Shield } from 'lucide-react';
 
 interface SecurityDashboardProps {
   onLogout: () => void;
@@ -18,17 +17,10 @@ const SecurityDashboard = ({ onLogout }: SecurityDashboardProps) => {
           <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
             Security Dashboard
           </h1>
-          <p className="text-purple-200 text-lg">Unauthorized Employee Login Monitor</p>
+          <p className="text-purple-200 text-lg">Employee Login & Attendance Monitor</p>
         </div>
       </div>
       <div className="flex items-center space-x-4">
-        <Link
-          to="/attendance"
-          className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-3 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center space-x-2"
-        >
-          <BarChart3 className="w-5 h-5" />
-          <span>Attendance Records</span>
-        </Link>
         <button
           onClick={onLogout}
           className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-6 py-3 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center space-x-2"
